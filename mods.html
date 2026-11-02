@@ -1,0 +1,10 @@
+<!doctype html><html lang="es"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Mods</title><link rel=stylesheet href=style.css>
+<body style="overflow:auto"><div class=bg style="background:#1b1b3a"></div><h1>MODS</h1>
+<a class=btn onclick="f.click()">Meter mod (.zip)</a><a class=btn id=gb target=_blank href="https://gamebanana.com/games/8694">GameBanana</a>
+<input id=f type=file accept=".zip" hidden><p id=m style="text-align:center;padding:0 20px;font-size:14px"></p><div id=l></div><a class=btn href=index.html>Volver</a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script><script src=engine/formats.js></script><script src=engine/core.js></script><script>
+function draw(){l.innerHTML='';DE.mods().forEach(x=>{const a=document.createElement('a');a.className='btn';a.style.fontSize='15px';a.textContent='✖ '+x.name+' ['+x.engine+'] '+x.songs.length+' canciones';a.onclick=async()=>{DE.saveMods(DE.mods().filter(y=>y.id!=x.id));draw()};l.appendChild(a)})}
+f.onchange=async()=>{m.textContent='Importando…';try{const mod=await DE.importZip(f.files[0],JSZip),ms=DE.mods().filter(x=>x.id!=mod.id);ms.push(mod);DE.saveMods(ms);draw();const c=mod.counts;
+ m.textContent=mod.name+' ('+mod.engine+', la versión no importa): '+mod.songs.length+' canciones, '+c.weeks+' semanas, '+c.chars+' personajes, '+c.stages+' stages, scripts: '+c.hx+' hx/hxc/hscript + '+c.lua+' lua + '+(c.scripts-c.hx-c.lua)+' js'}catch(e){m.textContent='Error: '+e.message}};
+draw();
+</script></html>

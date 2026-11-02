@@ -1,0 +1,17 @@
+<!doctype html><html lang="es"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Options</title><link rel=stylesheet href=style.css>
+<body style="overflow:auto"><div class=bg style="background:#2a2a5a"></div><h1 id=t>OPTIONS</h1><div id=o></div><a class=btn href=index.html id=back>Volver</a>
+<script src=engine/core.js></script><script>
+// Paginas de V-Slice: Preferences, Controls, Offsets, Save Data.
+const o=document.getElementById('o'),C=DE.cfg;C.keys=C.keys||['d','f','j','k'];C.offset=C.offset||0;
+const btn=(t,f)=>{const b=document.createElement('a');b.className='btn';b.innerHTML=t;b.onclick=f;o.appendChild(b);return b};
+function page(n){o.innerHTML='';t.textContent=n.toUpperCase();
+ if(n=='options'){['Preferences','Controls','Offsets','Save Data'].forEach(p=>btn(p,()=>page(p.toLowerCase())))}
+ else if(n=='preferences'){[['hitbox','Hitbox'],['hideEnemy','Ocultar flechas del enemigo'],['noMissTap','Tocar sin perder vida']].forEach(([k,l])=>{const b=btn('',()=>{C[k]=!C[k];DE.save();r()});const r=()=>b.textContent=l+': '+(C[k]?'ON':'OFF');r()});
+  const p=btn('',()=>{C.pos=C.pos=='bottom'?'top':'bottom';DE.save();r()}),r=()=>p.textContent='Downscroll: '+(C.pos=='bottom'?'ON':'OFF');r();
+  const z=btn('Tamaño flechas <input type=range min=.4 max=1 step=.05 value='+C.scale+'>');z.onclick=null;z.querySelector('input').oninput=e=>{C.scale=+e.target.value;DE.save()}}
+ else if(n=='controls'){['Izquierda','Abajo','Arriba','Derecha'].forEach((l,i)=>{const b=btn('',()=>{b.textContent=l+': ...';const h=e=>{e.preventDefault();C.keys[i]=e.key.toLowerCase();DE.save();removeEventListener('keydown',h,true);r()};addEventListener('keydown',h,true)}),r=()=>b.textContent=l+': '+C.keys[i].toUpperCase();r()})}
+ else if(n=='offsets'){const b=btn('',null),r=()=>b.innerHTML='Offset de audio: '+C.offset+' ms';r();btn('−10 ms',()=>{C.offset-=10;DE.save();r()});btn('+10 ms',()=>{C.offset+=10;DE.save();r()})}
+ else if(n=='save data'){btn('Borrar puntajes',()=>{localStorage.removeItem('de_scores');alert('Listo')});btn('Borrar mods',()=>{localStorage.removeItem('de_mods');indexedDB.deleteDatabase('dengine');alert('Listo')});btn('Restablecer opciones',()=>{document.cookie='de_cfg=;max-age=0;path=/';location.reload()})}
+ back.onclick=e=>{if(n!='options'){e.preventDefault();page('options')}}}
+page('options');
+</script></html>

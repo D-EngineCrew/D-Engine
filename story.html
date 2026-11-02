@@ -1,0 +1,17 @@
+<!doctype html><html lang="es"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Story Mode</title><link rel=stylesheet href=style.css>
+<body style="overflow:auto"><div style="background:#000;height:6vh"></div><div class=band id=band>LEVEL</div>
+<div style="display:flex;gap:4vw;padding:2vh 4vw"><div style="flex:1"><div style="color:#E55777;font:bold 24px monospace;text-align:left" id=tr></div></div>
+<div style="flex:1.2"><div id=sc style="text-align:right;font:bold 22px monospace;opacity:.7"></div><div id=ls></div></div></div>
+<div style="text-align:center;font:900 28px sans-serif" id=df></div>
+<a class=btn href=index.html style="margin-top:2vh">Volver</a>
+<script src=engine/core.js></script><script>
+// Story Mode estilo V-Slice: banda de color arriba, lista de niveles, tracklist (color #E55777 del source), flechas de dificultad.
+(async()=>{const ws=(await DE.allWeeks()).filter(w=>!w.hideStory),ls=document.getElementById('ls'),cols=['#F9CF51','#F9CF51','#33A6D1','#F9A8C8','#B4A0D8','#E55777','#FFAAFF','#6FC066'];let sel=0,df=1;
+ ws.forEach((w,i)=>{const d=document.createElement('div');d.className='lv';d.textContent=w.name.toUpperCase();d.onclick=()=>{if(sel==i)play();else{sel=i;draw()}};ls.appendChild(d)});
+ const draw=()=>{const w=ws[sel];[...ls.children].forEach((e,i)=>e.classList.toggle('sel',i==sel));band.style.background=cols[sel%cols.length];band.textContent=(w.chars||[]).filter(Boolean).join('  ·  ').toUpperCase();
+  tr.innerHTML='TRACKS<br><br>'+w.songs.map(s=>s.name.toUpperCase()).join('<br>');const d=w.diffs||['easy','normal','hard'];df=Math.min(df,d.length-1);window.dd=d;
+  document.getElementById('df').innerHTML='<span onclick="ch(-1)">◀</span> '+d[df].toUpperCase()+' <span onclick="ch(1)">▶</span>';sc.textContent='LEVEL SCORE: '+DE.hiscore('story:'+w.id)};
+ window.ch=v=>{df=(df+v+dd.length)%dd.length;draw()};
+ const play=()=>{const w=ws[sel];location.href='game.html?'+DE.findSong(w.songs[0].name)};
+ addEventListener('keydown',e=>{if(e.key=='ArrowUp')sel=(sel+ws.length-1)%ws.length;if(e.key=='ArrowDown')sel=(sel+1)%ws.length;if(e.key=='ArrowLeft')df--,ch(0);if(e.key=='ArrowRight')ch(1);if(e.key=='Enter')play();draw()});draw()})();
+</script></html>

@@ -1,0 +1,38 @@
+=== MOD ORIGINAL DE D-ENGINE ===
+(Solo aplica al formato nativo de D-Engine. Mods de Psych / V-Slice / Codename se importan tal cual; la versión NO importa.)
+Se sube como MiMod.zip desde "Meter mods". Nombres de archivo en minúsculas.
+
+MiMod/
+├─ dmod.json                  OBLIGATORIO {"id","name","author","description","songs":[...],"weeks":[...],"scripts":["scripts/x.js"]}
+├─ songs/<cancion>/
+│  ├─ chart.json              {"bpm":120,"speed":1.6,"notes":[{"t":ms,"d":0-7,"l":sustain_ms}],"events":[{"t":ms,"e":"nombre","v":[]}]}
+│  │                          d: 0-3 = jugador (izq,abajo,arriba,der) · 4-7 = rival
+│  ├─ meta.json               {"name","artist","bpm","difficulties","stage","player","opponent","gf","icon"}
+│  ├─ inst.ogg                (ogg/mp3/wav)
+│  ├─ voices-player.ogg       opcional
+│  └─ voices-opponent.ogg     opcional
+├─ weeks/<semana>.json        {"name","songs":["example"],"chars":["dad","bf","gf"],"background":"BG_Blue","difficulties":["easy","normal","hard"]}
+├─ characters/<char>.json     {"image":"bf","scale":1,"flipX":true,"icon":"bf","healthColor":"#31b0d1","position":[0,0],"singTime":4,
+│                              "anims":{"idle":{"prefix":"BF idle dance","fps":24,"loop":false,"offsets":[0,0]},"singLEFT":{...},"singDOWN":{...},"singUP":{...},"singRIGHT":{...},"singLEFTmiss":{...}}}
+├─ stages/<stage>.json        {"name","cameraZoom":0.9,"background":"images/stages/stage.png","characters":{"bf":[770,100],"dad":[100,100],"gf":[400,130]}}
+├─ images/
+│  ├─ characters/<char>.png + <char>.xml      atlas Sparrow (formato de Flash/Animate)
+│  ├─ stages/*.png
+│  ├─ icons/icon-<id>.png     iconos de vida: 300x150 (2 frames: normal | perdiendo), 150x150 por frame; <id> = campo "icon" del personaje
+│  └─ menu/                   fondos
+├─ scripts/                   se ejecutan siempre: .js (API game.on) · .hx/.hxc/.hscript (Haxe) · .lua (Psych)
+├─ songs/<cancion>/*.hx|.lua  scripts solo de esa canción
+├─ data/introText.txt         frases de la pantalla de título, una por línea con formato  texto1--texto2
+└─ data/                      datos libres
+
+SCRIPTS
+- .js:  game.on('onCreate'|'onBeat'|'onNoteHit'|'onMiss'|'onUpdate', fn) · game.say(texto) · game.health
+- .hx/.hxc/.hscript: funciones onCreate/create/postCreate, onUpdate/update(elapsed), onBeatHit/beatHit(beat), onStepHit/stepHit(step), goodNoteHit/onNoteHit/onPlayerHit(evento), opponentNoteHit/onDadHit, noteMiss/onNoteMiss/onPlayerMiss. Clases (.hxc): class X extends Y { function new(){...} override function onNoteHit(e){...} }
+  Disponibles: Std, Math, FlxG, FlxSprite, FlxText, FlxTween, FlxTimer, FlxMath, FlxColor, PlayState, StringTools, Reflect, Json, trace.
+- .lua (Psych): onCreate, onCreatePost, onUpdate, onBeatHit, onStepHit, goodNoteHit, opponentNoteHit, noteMiss, onTimerCompleted. Funciones: makeLuaSprite, makeGraphic, addLuaSprite, makeLuaText, setTextString, setProperty/getProperty, scaleObject, doTweenX/Y/Alpha/Angle/Zoom, runTimer, characterPlayAnim, setHealth/addScore y más.
+
+Plantilla completa: mods/ExampleMod/
+
+HUD / PAUSA
+- Iconos de vida: 150 px, rebotan x1.2 en cada beat; frame 2 cuando la vida del jugador baja de 20% (y el del rival cuando el jugador pasa de 80%). Colores de la barra = healthColor de cada personaje.
+- Pausa: Esc o P (o el botón arriba a la derecha en móvil). Entradas: Resume, Restart Song, Enable Practice Mode, Exit to Menu.

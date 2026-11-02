@@ -1,0 +1,32 @@
+<!doctype html><html lang="es"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Freeplay</title><link rel=stylesheet href=style.css>
+<style>#l{position:fixed;top:10vh;bottom:11vh;left:0;right:0;overflow:auto;padding-top:2vh;z-index:2}@media(min-width:800px){#l{left:36%}}.cap{display:flex;align-items:center;gap:14px}.ic{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 16px sans-serif;flex:none;border:3px solid #fff}</style>
+<body><div class=bg id=bg style="background:#1b1b3a"></div><canvas id=cv style="position:fixed;inset:0;width:100%;height:100%;z-index:1;opacity:.9"></canvas>
+<div style="position:fixed;top:0;left:0;right:0;height:9vh;background:#000;display:flex;align-items:center;padding:0 16px;font:bold 26px sans-serif;z-index:3">FREEPLAY <span style="margin-left:auto;font-size:18px" id=sc></span></div>
+<div id=l></div>
+<div style="position:fixed;bottom:0;left:0;right:0;height:10vh;background:#000;display:flex;align-items:center;justify-content:space-around;z-index:3"><a href=index.html style="color:#fff;font:bold 20px sans-serif">◀ Volver</a><span id=df style="font:900 24px sans-serif"></span><span onclick="cc()" style="font:bold 16px sans-serif;opacity:.8">[C] personaje</span><span onclick="play()" style="font:900 22px sans-serif;border:3px solid #fff;padding:6px 18px;border-radius:30px">JUGAR</span></div>
+<script src=engine/formats.js></script><script src=engine/core.js></script><script src=engine/scene.js></script><script>
+// Freeplay estilo V-Slice: capsulas con icono, puntaje guardado, dificultad y el "DJ" (personaje del mod) animado a la izquierda. [C] cambia de personaje.
+(async()=>{const L=document.getElementById('l'),songs=[];(await DE.allWeeks()).filter(w=>!w.hideFree).forEach(w=>w.songs.forEach(s=>songs.push({...s,w})));
+ songs.unshift({name:'Demo (120 BPM)',color:'rgb(146,113,253)',w:{diffs:['normal']},demo:1});
+ try{const ids=await (await fetch('mods/index.json')).json();for(const id of ids){const d=await (await fetch('mods/'+id+'/dmod.json')).json();for(const n of d.songs||[])songs.splice(1,0,{name:n,color:'rgb(49,176,209)',w:{name:d.name,diffs:['normal']},src:'src='+encodeURIComponent('mods/'+id+'/songs/'+n)+'&scripts='+encodeURIComponent((d.scripts||[]).map(x=>'mods/'+id+'/'+x).join(','))})}}catch(e){}
+ DE.mods().forEach(m=>m.songs.forEach(s=>{const x=songs.find(y=>y.name==s.name&&!y.modId);if(x)x.modId=m.id}));
+ let sel=0,df=1,dj=null,djIdx=0,djMod=null;
+ songs.forEach((s,i)=>{const d=document.createElement('div');d.className='cap';const ic=(s.icon||s.name).slice(0,2).toUpperCase();d.innerHTML='<div class=ic style="background:'+(s.color||'#555')+'">'+ic+'</div><div>'+s.name+'<small style="display:block;opacity:.6;font-size:13px">'+(s.w.name||'')+(s.modId?' · mod':'')+'</small></div>';d.onclick=()=>{if(sel==i)play();else{sel=i;draw()}};L.appendChild(d)});
+ const draw=()=>{[...L.children].forEach((e,i)=>e.classList.toggle('sel',i==sel));const s=songs[sel],d=s.w.diffs||['normal'];df=Math.min(df,d.length-1);bg.style.background=s.color||'#1b1b3a';
+  df_.innerHTML='<span onclick="cd(-1)">◀</span> '+d[df].toUpperCase()+' <span onclick="cd(1)">▶</span>';sc.textContent='SCORE '+DE.hiscore('fp:'+s.name+':'+d[df]);L.children[sel].scrollIntoView({block:'center',behavior:'smooth'});loadDJ(s.modId)};
+ const df_=document.getElementById('df');
+ window.cd=v=>{const d=songs[sel].w.diffs||['normal'];df=(df+v+d.length)%d.length;draw()};
+ window.play=()=>{const s=songs[sel],d=(s.w.diffs||['normal'])[df];location.href='game.html?'+(s.demo?'demo=1':s.src?s.src:DE.findSong(s.name))+'&d='+encodeURIComponent(d)};
+ // DJ: personaje del mod (bf primero), animacion idle en bucle
+ async function loadDJ(id){if(!id){dj=null;djMod=null;return}if(djMod&&djMod.id==id)return;const m=await DE.getMod(id);if(!m)return;djMod=m;const sc=new DScene(m);
+  const list=Object.values(m.chars).sort((a,b)=>(a.id=='bf'?-1:0)-(b.id=='bf'?-1:0));dj={sc,list};djIdx=0;setDJ()}
+ function setDJ(){if(!dj||!dj.list.length)return;dj.sc.chars={};dj.sc.addChar('dj',dj.list[djIdx%dj.list.length],0,0,false)}
+ window.cc=()=>{djIdx++;setDJ()};cv.onclick=()=>cc();
+ const g=cv.getContext('2d');let last=performance.now(),tick=0;
+ (function loop(){const W=cv.width=innerWidth,H=cv.height=innerHeight,dt=(performance.now()-last)/1000;last=performance.now();g.clearRect(0,0,W,H);
+  if(dj&&dj.sc.chars.dj){tick+=dt;if(tick>.7){tick=0;dj.sc.chars.dj.play('idle')}dj.sc.update(dt);const k=Math.min(W,H*1.78)/1280*.7;g.save();g.translate(W>=800?W*.03:W*.2,H*.12);g.scale(k,k);dj.sc.drawChar(g,dj.sc.chars.dj);g.restore();
+   g.fillStyle='#fff';g.font='bold 16px sans-serif';g.fillText(dj.list[djIdx%dj.list.length].id,16,H-90)}
+  else if(!songs[sel].modId){g.fillStyle='#fff8';g.font='16px sans-serif';g.fillText('Importa un mod con personajes para ver al DJ',16,H-90)}
+  requestAnimationFrame(loop)})();
+ addEventListener('keydown',e=>{if(e.key=='ArrowUp')sel=(sel+songs.length-1)%songs.length;if(e.key=='ArrowDown')sel=(sel+1)%songs.length;if(e.key=='ArrowLeft')cd(-1);if(e.key=='ArrowRight')cd(1);if(e.key=='c'||e.key=='C')cc();if(e.key=='Enter')play();draw()});draw()})();
+</script></html>

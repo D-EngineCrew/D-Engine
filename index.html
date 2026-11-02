@@ -1,0 +1,13 @@
+<!doctype html><html lang="es"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>D-Engine</title><link rel=stylesheet href=style.css>
+<body><div class=bg id=bg></div><div class=menu id=m></div>
+<div id=side><h2>Menú</h2><a class=btn style="width:100%;font-size:18px" href="mods.html">Meter mods</a><a class=btn style="width:100%;font-size:18px" href="mods.html#gb">GameBanana</a></div>
+<script src=engine/core.js></script><script>
+// Menú principal estilo V-Slice (storymode, freeplay, options, credits). Fondo amarillo y parpadeo magenta al elegir (colores del juego, aproximados).
+const items=[['Story Mode','story.html'],['Freeplay','freeplay.html'],['Options','options.html'],['Credits','credits.html']],m=document.getElementById('m');let sel=+(sessionStorage.mm||0),busy=false;
+items.forEach(([n,h],i)=>{const d=document.createElement('div');d.className='mi';d.textContent=n;d.onclick=()=>{if(sel==i)go();else{sel=i;draw()}};m.appendChild(d)});
+function draw(){[...m.children].forEach((e,i)=>e.classList.toggle('sel',i==sel))}draw();
+function go(){if(busy)return;busy=true;sessionStorage.mm=sel;const bg=document.getElementById('bg');let k=0;const iv=setInterval(()=>{bg.style.background=k++%2?'#FDE871':'#FD719B'},150);setTimeout(()=>{clearInterval(iv);location.href=items[sel][1]},1100)}
+addEventListener('keydown',e=>{if(e.key=='ArrowUp')sel=(sel+items.length-1)%items.length;if(e.key=='ArrowDown')sel=(sel+1)%items.length;if(e.key=='Enter')go();if(e.key=='m')side.classList.toggle('open');draw()});
+let x0=0;addEventListener('touchstart',e=>x0=e.touches[0].clientX);addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-x0;if(d<-60)side.classList.add('open');if(d>60)side.classList.remove('open')});
+if(!sessionStorage.fs){sessionStorage.fs=1;if(confirm('¿Activar pantalla completa?'))document.documentElement.requestFullscreen?.()}
+</script></html>

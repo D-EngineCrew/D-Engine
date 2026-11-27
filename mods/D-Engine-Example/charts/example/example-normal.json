@@ -1,0 +1,151 @@
+{
+  "format": "dengine-chart",
+  "song": "Example",
+  "bpm": 120,
+  "speed": 2.0,
+  "stage": "stage",
+  "noteStyle": "funkin",
+  "characters": {
+    "player": "bf",
+    "opponent": "dad",
+    "girlfriend": "gf"
+  },
+  "bpmChanges": [
+    {
+      "t": 0,
+      "bpm": 120
+    }
+  ],
+  "camera": [
+    {
+      "t": 0,
+      "focus": "opponent"
+    },
+    {
+      "t": 4000,
+      "focus": "player"
+    }
+  ],
+  "notes": [
+    {
+      "t": 2000,
+      "lane": 0,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 2500,
+      "lane": 1,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 3000,
+      "lane": 2,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 3500,
+      "lane": 3,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 4000,
+      "lane": 0,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 4500,
+      "lane": 1,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 5000,
+      "lane": 2,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 5500,
+      "lane": 3,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 6000,
+      "lane": 0,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 6500,
+      "lane": 1,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 7000,
+      "lane": 2,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 7500,
+      "lane": 3,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 8000,
+      "lane": 0,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 8500,
+      "lane": 1,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 9000,
+      "lane": 2,
+      "side": "player",
+      "len": 0,
+      "kind": ""
+    },
+    {
+      "t": 9500,
+      "lane": 3,
+      "side": "opponent",
+      "len": 0,
+      "kind": ""
+    }
+  ],
+  "events": [
+    {
+      "t": 3000,
+      "name": "Flash",
+      "a": "0.4",
+      "b": ""
+    }
+  ]
+}

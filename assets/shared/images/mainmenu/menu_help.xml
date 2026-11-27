@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_help.png">
+	<SubTexture name="help basic0000" x="0" y="0" width="690" height="88"/>
+	<SubTexture name="help white0000" x="0" y="96" width="690" height="88"/>
+</TextureAtlas>

@@ -1,0 +1,9 @@
+{
+  "effect": "wave",
+  "target": "camGame",
+  "params": {
+    "amplitude": 0.01,
+    "frequency": 20.0,
+    "speed": 2.0
+  }
+}

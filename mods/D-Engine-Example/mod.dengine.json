@@ -1,0 +1,7 @@
+{
+  "name": "D-Engine Example",
+  "description": "Mod de ejemplo con la estructura D-Engine",
+  "author": "DYLAN-FNF-PORTS-MOBILE",
+  "engine": "D-Engine",
+  "engineVersion": "0.1.0"
+}
